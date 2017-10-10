@@ -3,14 +3,14 @@ cmake_minimum_required(VERSION 2.8.9)
 project(opengl-tutorial)
 
 #Bring the headers
-include_directories(${CMAKE_SOURCE_DIR}/3rdparty/include)
+include_directories(${CMAKE_SOURCE_DIR}/dependencies/include)
 
 IF(APPLE)
   #Add GLFW static library
   add_library(GLFW_LIBRARY STATIC IMPORTED) # or SHARED instead of STATIC
   set_target_properties(GLFW_LIBRARY PROPERTIES
-    IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/3rdparty/lib/macOS/libglfw3.a"
-    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/3rdparty/include/GLFW")
+    IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/dependencies/lib/macos/libglfw3.a"
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/dependencies/include/glfw")
 
    #SET(GUI_TYPE MACOSX_BUNDLE)
    FIND_LIBRARY(IOKIT_LIBRARY IOKit)
