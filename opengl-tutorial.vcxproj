@@ -71,11 +71,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>D:\Documents\GitHub\opengl-tutorial\dependencies\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Documents\GitHub\opengl-tutorial\dependencies\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\Documents\GitHub\opengl-tutorial\dependencies\lib\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>D:\Documents\GitHub\opengl-tutorial\dependencies\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Documents\GitHub\opengl-tutorial\dependencies\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\Documents\GitHub\opengl-tutorial\dependencies\lib\win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\brian\glad.c" />
+    <ClCompile Include="src\brian\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
