@@ -1,6 +1,7 @@
 # opengl-tutorial
 
 Follows the tutorial found at https://learnopengl.com/.
+Contains two sets of source code under src. Building with either set should work.
 
 This project requires having CMake version 2.8.9 or higher.
 
