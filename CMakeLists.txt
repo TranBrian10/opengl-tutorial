@@ -10,7 +10,7 @@ IF(APPLE)
   add_library(GLFW_LIBRARY STATIC IMPORTED) # or SHARED instead of STATIC
   set_target_properties(GLFW_LIBRARY PROPERTIES
     IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/dependencies/lib/macos/libglfw3.a"
-    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/dependencies/include/glfw")
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/dependencies/include")
 
    #SET(GUI_TYPE MACOSX_BUNDLE)
    FIND_LIBRARY(IOKIT_LIBRARY IOKit)
@@ -24,7 +24,7 @@ IF(APPLE)
 ENDIF (APPLE)
 
 #the file(GLOB...) allows for wildcard additions:
-file(GLOB SOURCES "src/*.c*")
+file(GLOB SOURCES "src/sina/*.c*")
 
 add_executable(testProj ${SOURCES})
 target_link_libraries(testProj GLFW_LIBRARY ${EXTRA_LIBS})
