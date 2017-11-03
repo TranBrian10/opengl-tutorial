@@ -3,6 +3,10 @@
 #include <sstream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include <map>
+#include <glm/glm.hpp>
 
 #define ERR_RTN -1
 
@@ -18,6 +22,15 @@ bool linkProgram(GLuint &program, const GLuint vertexShader, const GLuint fragme
 std::string VertexBufferStr;
 std::string FragmentBufferStr;
 
+struct Character {
+    GLuint     TextureID;  // ID handle of the glyph texture
+    glm::ivec2 Size;       // Size of glyph
+    glm::ivec2 Bearing;    // Offset from baseline to left/top of glyph
+    GLuint     Advance;    // Offset to advance to next glyph
+};
+
+std::map<GLchar, Character> Characters;
+
 int main()
 {
     // Initial setup for GLFW
@@ -28,6 +41,63 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    
+    // Font creation
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft)) // Intialize
+        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+    
+    FT_Face face;
+    if (FT_New_Face(ft, "../../src/sina/fonts/open-sans/OpenSans-Regular.ttf", 0, &face)) // Load the font
+        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+    // Sets the font's width and height parameters.
+    // Setting the width to 0 lets the face dynamically calculate the width based on the given height.
+    FT_Set_Pixel_Sizes(face, 0, 48);
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
+    
+    for (GLubyte c = 0; c < 128; c++)
+    {
+        // Load character glyph
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+        {
+            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+            continue;
+        }
+        // Generate texture
+        GLuint texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(
+                     GL_TEXTURE_2D,
+                     0,
+                     GL_RED,
+                     face->glyph->bitmap.width,
+                     face->glyph->bitmap.rows,
+                     0,
+                     GL_RED,
+                     GL_UNSIGNED_BYTE,
+                     face->glyph->bitmap.buffer
+                     );
+        // Set texture options
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // Now store character for later use
+        Character character = {
+            texture,
+            glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+            glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+            face->glyph->advance.x
+        };
+        Characters.insert(std::pair<GLchar, Character>(c, character));
+    }
+    
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
+    
+    ///////////////
     
     // Initalize a window
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL Tutorial", NULL, NULL);
@@ -66,12 +136,17 @@ int main()
     if (!success)
         return ERR_RTN;
     
-    float vertices[] = {
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left
+    GLfloat ctr_x = -0.8f;
+    GLfloat ctr_y = 0.0f;
+    GLfloat off_x = 0.05f;
+    GLfloat off_y = off_x * 6;
+    GLfloat vertices[] = {
+        ctr_x + off_x, ctr_y + off_y, 0.0f,  // top right
+        ctr_x + off_x, ctr_y - off_y, 0.0f,  // bottom right
+        ctr_x - off_x, ctr_y - off_y, 0.0f,  // bottom left
+        ctr_x - off_x, ctr_y + off_y, 0.0f   // top left
     };
+    
     GLuint indices[] = {  // note that we start from 0!
         0, 1, 3,  // first Triangle
         1, 2, 3   // second Triangle
@@ -119,7 +194,7 @@ int main()
         processInput(window); // Check if window needs to be closed
         
         // Actual rendering code
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // State-setting function
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // State-setting function
         glClear(GL_COLOR_BUFFER_BIT); // State-using function: uses the current state(set before)
         
         // ----------------- // ----------------- //
