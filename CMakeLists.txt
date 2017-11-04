@@ -60,3 +60,12 @@ add_executable(testProj ${SOURCES})
 target_link_libraries(testProj GLEW_LIBRARY GLFW_LIBRARY FREETYPE_LIBRARY PNG_LIBRARY BZIPTWO_LIBRARY ZLIB_LIBRARY ${EXTRA_LIBS})
 
 ENDIF (APPLE)
+
+IF (WIN32)
+
+#the file(GLOB...) allows for wildcard additions:
+file(GLOB SOURCES src/brian/*.c src/brian/*.cpp src/brian/*.hpp)
+
+add_executable(testProj ${SOURCES})
+
+ENDIF (WIN32)
