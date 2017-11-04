@@ -13,6 +13,12 @@ IF(APPLE)
     IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/dependencies/lib/macos/libglfw3.a"
     INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/dependencies/include")
 
+  #Add GLEW static library
+  add_library(GLEW_LIBRARY STATIC IMPORTED) # or SHARED instead of STATIC
+  set_target_properties(GLEW_LIBRARY PROPERTIES
+    IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/dependencies/lib/macos/libGLEW.a"
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/dependencies/include")
+
   #Add FreeType static library
   add_library(FREETYPE_LIBRARY STATIC IMPORTED) # or SHARED instead of STATIC
   set_target_properties(FREETYPE_LIBRARY PROPERTIES
@@ -48,9 +54,9 @@ IF(APPLE)
     ${CORE_VIDEO_LIBRARY})
 
 #the file(GLOB...) allows for wildcard additions:
-file(GLOB SOURCES "src/sina/*.c*")
+file(GLOB SOURCES src/sina/*.c src/sina/*.cpp src/sina/*.hpp)
 
 add_executable(testProj ${SOURCES})
-target_link_libraries(testProj GLFW_LIBRARY FREETYPE_LIBRARY PNG_LIBRARY BZIPTWO_LIBRARY ZLIB_LIBRARY ${EXTRA_LIBS})
+target_link_libraries(testProj GLEW_LIBRARY GLFW_LIBRARY FREETYPE_LIBRARY PNG_LIBRARY BZIPTWO_LIBRARY ZLIB_LIBRARY ${EXTRA_LIBS})
 
 ENDIF (APPLE)
