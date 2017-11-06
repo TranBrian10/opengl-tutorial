@@ -5,7 +5,11 @@ project(opengl-tutorial)
 #Bring the headers
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/include)
 
+set(BUILDPATH "general" CACHE STRING "Option to either build pang-pong or general.")
+
 IF(APPLE)
+
+  message("\n" "You have set your source files to be selected from this path:\n" ${CMAKE_SOURCE_DIR}/sina/${BUILDPATH} "\n")
 
   #Add GLFW static library
   add_library(GLFW_LIBRARY STATIC IMPORTED) # or SHARED instead of STATIC
@@ -54,7 +58,7 @@ IF(APPLE)
     ${CORE_VIDEO_LIBRARY})
 
 #the file(GLOB...) allows for wildcard additions:
-file(GLOB SOURCES src/sina/*.c src/sina/*.cpp src/sina/*.hpp)
+file(GLOB SOURCES src/sina/${BUILDPATH}/*.c src/sina/${BUILDPATH}/*.cpp src/sina/${BUILDPATH}/*.hpp)
 
 add_executable(testProj ${SOURCES})
 target_link_libraries(testProj GLEW_LIBRARY GLFW_LIBRARY FREETYPE_LIBRARY PNG_LIBRARY BZIPTWO_LIBRARY ZLIB_LIBRARY ${EXTRA_LIBS})
